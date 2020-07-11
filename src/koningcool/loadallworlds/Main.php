@@ -46,7 +46,7 @@ class Main extends PluginBase
         # Load the levels
         foreach (array_diff(scandir($this->getServer()->getDataPath() . "worlds"), ["..", "."]) as $levelName) {
             # Only load level if not in exclude list, which can be empty
-            if !in_array ($levelName,$exclude) {
+            if (!in_array($levelName, $exclude)) {
                 $this->getServer()->loadLevel($levelName);
             }
         }
