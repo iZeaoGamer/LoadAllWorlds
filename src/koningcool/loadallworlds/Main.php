@@ -33,10 +33,10 @@ class Main extends PluginBase
         # Get appropriate exclude list (on-load, on-command, default = no list)
         switch ($excludelist) {
             case "on-load":
-                $exclude = $this->getConfig()->get("on-startup.exclude");
+                $exclude = $this->getConfig()->get("on-startup")->get("exclude");
                 break;
             case "on-command":
-                $exclude = $this->getConfig()->get("on-command.exclude");
+                $exclude = $this->getConfig()->get("on-command")->get("exclude");
                 break;
             default:
                 $exclude = "";
@@ -45,8 +45,10 @@ class Main extends PluginBase
 
         # Load the levels
         foreach (array_diff(scandir($this->getServer()->getDataPath() . "worlds"), ["..", "."]) as $levelName) {
-            # ToDo: if !$levelName in [$exclude]
-            $this->getServer()->loadLevel($levelName);
+            # Only load level if not in exclude list, which can be empty
+            if !in_array ($levelName,$exclude) {
+                $this->getServer()->loadLevel($levelName);
+            }
         }
 
         if ($debugMode === true) {
