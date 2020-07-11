@@ -26,7 +26,7 @@ class Main extends PluginBase
     private function loadWorlds(string $excludelist, bool $showInfo) : void
     {
         $loadedLevelsBefore = intval(count($this->getServer()->getLevels()));
-        if ($debugMode === true) {
+        if ($this->debugMode === true) {
             $this->getLogger()->info(TextFormat::DARK_GREEN . "Worlds loaded before: " . $loadedLevelsBefore);
         }
         
@@ -51,14 +51,14 @@ class Main extends PluginBase
             }
         }
 
-        if ($debugMode === true) {
+        if ($this->debugMode === true) {
             $this->getLogger()->info(TextFormat::DARK_GREEN . "All worlds are loaded!");
         }
         $loadedLevelsAfter = intval(count($this->getServer()->getLevels()));
-        if ($debugMode === true) {
+        if ($this->debugMode === true) {
             $this->getLogger()->info(TextFormat::DARK_GREEN . "Worlds loaded after: " . $loadedLevelsAfter);
         }
-        if ($debugMode === true) {
+        if ($this->debugMode === true) {
             $loadedLevelsDiff = $loadedLevelsAfter - $loadedLevelsBefore;
         }
         if ($loadedLevelsAfter > $loadedLevelsBefore) {
@@ -77,14 +77,14 @@ class Main extends PluginBase
 
     public function onLoad() : void
     {
-        if ($debugMode === true) {
+        if ($this->debugMode === true) {
             $this->getLogger()->info(TextFormat::DARK_BLUE . "LoadAllWorlds Loaded!");
         }
     }
 
     public function onEnable() : void
     {
-        if ($debugMode === true) {
+        if ($this->debugMode === true) {
             $this->getLogger()->info(TextFormat::DARK_GREEN . "LoadAllWorlds Enabled!");
         }
         $this->saveDefaultConfig();
@@ -92,12 +92,12 @@ class Main extends PluginBase
         if ($this->getConfig()->get("on-startup")->get("load-worlds") === true) {
             $this->loadWorlds("on-load", false); # use on-load exclude list
         }
-        $debugMode = $this->getConfig()->get("debug");
+        $this->debugMode = $this->getConfig()->get("debug");
     }
 
     public function onDisable() : void
     {
-        if ($debugMode === true) {
+        if ($this->debugMode === true) {
             $this->getLogger()->info(TextFormat::DARK_RED . "LoadAllWorlds Disabled!");
         }
     }
