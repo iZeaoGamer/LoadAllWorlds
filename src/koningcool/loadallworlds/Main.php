@@ -63,6 +63,9 @@ class Main extends PluginBase
                 } else {
                     $this->getLogger()->info(TextFormat::DARK_RED . "No extra worlds loaded!");
                 }
+
+                $this->getLogger()->info(TextFormat::DARK_GREEN . "All worlds are loaded!");
+
         }
         return true;
     }
