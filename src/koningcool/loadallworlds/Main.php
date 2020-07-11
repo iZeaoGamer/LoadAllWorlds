@@ -21,51 +21,88 @@ interface PluginIdentifiableCommand
 
 class Main extends PluginBase
 {
-    private function loadWorlds() : void
+    private $debugMode = false;
+    
+    private function loadWorlds(string $excludelist) : void
     {
+        $loadedLevelsBefore = intval(count($this->getServer()->getLevels()));
+        if ($debugMode === true) {
+            $this->getLogger()->info(TextFormat::DARK_GREEN . "Worlds loaded before: " . $loadedLevelsBefore);
+        }
+        
+        # Get appropriate exclude list (on-load, on-command, default = no list)
+        switch ($excludelist) {
+            case "on-load":
+                $exclude = $this->getConfig()->get("on-startup.exclude");
+                break;
+            case "on-command":
+                $exclude = $this->getConfig()->get("on-command.exclude");
+                break;
+            default:
+                $exclude = "";
+                break;
+        }
+
+        # Load the levels
         foreach (array_diff(scandir($this->getServer()->getDataPath() . "worlds"), ["..", "."]) as $levelName) {
+            # ToDo: if !$levelName in [$exclude]
             $this->getServer()->loadLevel($levelName);
         }
+
+        if ($debugMode === true) {
+            $this->getLogger()->info(TextFormat::DARK_GREEN . "All worlds are loaded!");
+        }
+        $loadedLevelsAfter = intval(count($this->getServer()->getLevels()));
+        if ($debugMode === true) {
+            $this->getLogger()->info(TextFormat::DARK_GREEN . "Worlds loaded after: " . $loadedLevelsAfter);
+        }
+        if ($debugMode === true) {
+            $loadedLevelsDiff = $loadedLevelsAfter - $loadedLevelsBefore;
+        }
+        if ($loadedLevelsAfter > $loadedLevelsBefore) {
+            $this->getLogger()->info(TextFormat::DARK_GREEN . "All worlds are loaded.");
+        } else {
+            $this->getLogger()->info(TextFormat::DARK_RED . "No extra worlds loaded!");
+        }
+        $this->getLogger()->info(TextFormat::DARK_GREEN . "All worlds are loaded!");
     }
+
     public function onLoad() : void
     {
-        //$this->getLogger()->info(TextFormat::DARK_BLUE . "LoadAllWorlds Loaded!");
+        if ($debugMode === true) {
+            $this->getLogger()->info(TextFormat::DARK_BLUE . "LoadAllWorlds Loaded!");
+        }
     }
 
     public function onEnable() : void
     {
-        //$this->getLogger()->info(TextFormat::DARK_GREEN . "LoadAllWorlds Enabled!");
+        if ($debugMode === true) {
+            $this->getLogger()->info(TextFormat::DARK_GREEN . "LoadAllWorlds Enabled!");
+        }
         $this->saveDefaultConfig();
         $this->reloadConfig();
-        if ($this->getConfig()->get("load-on-startup") === true) {
-            $this->loadWorlds();
+        if ($this->getConfig()->get("on-startup.load-all") === true) {
+            $this->loadWorlds("on-load"); # use on-load exclude list
         }
+        $debugMode = $this->getConfig()->get("debug");
     }
 
     public function onDisable() : void
     {
-        //$this->getLogger()->info(TextFormat::DARK_RED . "LoadAllWorlds Disabled!");
+        if ($debugMode === true) {
+            $this->getLogger()->info(TextFormat::DARK_RED . "LoadAllWorlds Disabled!");
+        }
     }
         
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool
     {
         switch ($command->getName()) {
             case "loadall":
-                $loadedLevelsBefore = intval(count($this->getServer()->getLevels()));
-                //$this->getLogger()->info(TextFormat::DARK_GREEN . "Worlds loaded before: " . $loadedLevelsBefore);
-                $this->loadWorlds();
-                //$this->getLogger()->info(TextFormat::DARK_GREEN . "All worlds are loaded!");
-                $loadedLevelsAfter = intval(count($this->getServer()->getLevels()));
-                //$this->getLogger()->info(TextFormat::DARK_GREEN . "Worlds loaded after: " . $loadedLevelsAfter);
-                //$loadedLevelsDiff = $loadedLevelsAfter - $loadedLevelsBefore;
-                if ($loadedLevelsAfter > $loadedLevelsBefore) {
-                    $this->getLogger()->info(TextFormat::DARK_GREEN . "All worlds are loaded.");
-                } else {
-                    $this->getLogger()->info(TextFormat::DARK_RED . "No extra worlds loaded!");
-                }
-
-                $this->getLogger()->info(TextFormat::DARK_GREEN . "All worlds are loaded!");
-
+                $this->loadWorlds(""); # do not use any exclude list
+                break;
+            case "loadworlds":
+                $this->loadWorlds("on-command"); # use on-command exclude list
+                break;
         }
         return true;
     }
