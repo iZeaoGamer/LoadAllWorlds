@@ -23,7 +23,7 @@ class Main extends PluginBase
 {
     private $debugMode = false;
     
-    private function loadWorlds(string $excludelist) : void
+    private function loadWorlds(string $excludelist, bool $showInfo) : void
     {
         $loadedLevelsBefore = intval(count($this->getServer()->getLevels()));
         if ($debugMode === true) {
@@ -62,11 +62,17 @@ class Main extends PluginBase
             $loadedLevelsDiff = $loadedLevelsAfter - $loadedLevelsBefore;
         }
         if ($loadedLevelsAfter > $loadedLevelsBefore) {
-            $this->getLogger()->info(TextFormat::DARK_GREEN . "All worlds are loaded.");
+            if ($showInfo === true) {
+                $this->getLogger()->info(TextFormat::DARK_GREEN . "All worlds are loaded.");
+            }
         } else {
-            $this->getLogger()->info(TextFormat::DARK_RED . "No extra worlds loaded!");
+            if ($showInfo === true) {
+                $this->getLogger()->info(TextFormat::DARK_RED . "No extra worlds loaded!");
+            }
         }
-        $this->getLogger()->info(TextFormat::DARK_GREEN . "All worlds are loaded!");
+        if ($showInfo === true) {
+            $this->getLogger()->info(TextFormat::DARK_GREEN . "All worlds are loaded!");
+        }
     }
 
     public function onLoad() : void
@@ -83,8 +89,8 @@ class Main extends PluginBase
         }
         $this->saveDefaultConfig();
         $this->reloadConfig();
-        if ($this->getConfig()->get("on-startup.load-all") === true) {
-            $this->loadWorlds("on-load"); # use on-load exclude list
+        if ($this->getConfig()->get("on-startup")->get("load-worlds") === true) {
+            $this->loadWorlds("on-load", false); # use on-load exclude list
         }
         $debugMode = $this->getConfig()->get("debug");
     }
@@ -100,10 +106,10 @@ class Main extends PluginBase
     {
         switch ($command->getName()) {
             case "loadall":
-                $this->loadWorlds(""); # do not use any exclude list
+                $this->loadWorlds("", true); # do not use any exclude list
                 break;
             case "loadworlds":
-                $this->loadWorlds("on-command"); # use on-command exclude list
+                $this->loadWorlds("on-command", true); # use on-command exclude list
                 break;
         }
         return true;
