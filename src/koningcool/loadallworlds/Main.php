@@ -90,7 +90,7 @@ class Main extends PluginBase
         }
         $this->saveDefaultConfig();
         $this->reloadConfig();
-        $this->getConfig()->getAll;
+        $this->getConfig()->getAll();
         if ($this->getConfig()->getNested("on-startup.load-worlds") === true) {
             $this->loadWorlds("on-load", false); # use on-load exclude list
         }
