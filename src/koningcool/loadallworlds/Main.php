@@ -58,23 +58,17 @@ class Main extends PluginBase
             }
         }
 
-        if ($this->debugMode === true) {
-            $this->getLogger()->info(TextFormat::DARK_GREEN . "Fishished loading worlds.");
-        }
         $loadedLevelsAfter = intval(count($this->getServer()->getLevels()));
 
         if ($this->debugMode === true) {
+            $this->getLogger()->info(TextFormat::DARK_GREEN . "Fishished loading worlds.");
             $this->getLogger()->info(TextFormat::DARK_GREEN . "Worlds loaded after: " . $loadedLevelsAfter);
         }
 
-        if ($loadedLevelsAfter > $loadedLevelsBefore) {
-            if ($showInfo === true) {
-                $this->getLogger()->info(TextFormat::DARK_GREEN . "One or more worlds were loaded.");
-            }
+        if (($loadedLevelsAfter > $loadedLevelsBefore) && ($showInfo === true)) {
+            $this->getLogger()->info(TextFormat::DARK_GREEN . "One or more worlds were loaded.");
         } else {
-            if ($showInfo === true) {
-                $this->getLogger()->info(TextFormat::DARK_RED . "No extra worlds loaded!");
-            }
+            $this->getLogger()->info(TextFormat::DARK_RED . "No extra worlds loaded!");
         }
     }
 
