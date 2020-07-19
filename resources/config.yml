@@ -5,18 +5,18 @@
 # Exclude the worlds you don't want to load at startup using the exclude line
 #   Separate the worlds with a comma, use double quotes (")
 #   (Leave this blank if you don't want to exclude anything)
-#   Example: exclude ["water world,excluded"]
+#   Example: exclude ["waterworld,excluded"]
 on-startup:
   load-worlds: false
-  exclude: "testworld,noworld"
+  exclude: ""
 
 #- ON COMMAND
 # Exclude the worlds here you don't want to load when executing the command /loadworlds
-#   Separate the worlds with a comma, use double quotes (") when a world name includes spaces
+#   Separate the worlds with a comma, use double quotes (")
 #   (Leave this blank if you don't want to exclude anything)
-#   Example: exclude ["water world,excluded"]
+#   Example: exclude ["waterworld,excluded"]
 on-command:
-  exclude: "testworld,noworld"
+  exclude: ""
 
 # Debug mode (true or false)
-debug: true
+debug: false
