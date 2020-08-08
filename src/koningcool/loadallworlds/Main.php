@@ -23,12 +23,16 @@ class Main extends PluginBase
 {
     private function loadWorlds() : void
     {
+      
         foreach (array_diff(scandir($this->getServer()->getDataPath() . "worlds"), ["..", "."]) as $levelName) {
             $this->getServer()->loadLevel($levelName);
         }
     }
     public function onLoad() : void
     {
+        if ($this->getConfig()->get("load-on-startup") === true) {
+            $this->loadWorlds();
+        }
         //$this->getLogger()->info(TextFormat::DARK_BLUE . "LoadAllWorlds Loaded!");
     }
 
@@ -37,9 +41,9 @@ class Main extends PluginBase
         //$this->getLogger()->info(TextFormat::DARK_GREEN . "LoadAllWorlds Enabled!");
         $this->saveDefaultConfig();
         $this->reloadConfig();
-        if ($this->getConfig()->get("load-on-startup") === true) {
-            $this->loadWorlds();
-        }
+       // if ($this->getConfig()->get("load-on-startup") === true) {
+         //   $this->loadWorlds();
+      //  }
     }
 
     public function onDisable() : void
